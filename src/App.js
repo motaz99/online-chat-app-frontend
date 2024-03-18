@@ -18,7 +18,7 @@ function App() {
     return () => {
       socket.off("receive_message");
     };
-  }, []);
+  }, [socket]);
 
   const sendMessage = () => {
     const newMessage = {
@@ -60,7 +60,7 @@ function App() {
           Send Message
         </Button>
       </Paper>
-      <Chat />
+      <Chat messages={messages} />
     </Container>
   );
 }
