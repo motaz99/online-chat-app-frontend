@@ -1,18 +1,19 @@
-import React from "react";
-import { makeStyles } from "@mui/styles"; // Note the correct import path
-import Paper from "@mui/material/Paper"; // Correct import path
-import Grid from "@mui/material/Grid"; // Correct import path
-import Box from "@mui/material/Box"; // Correct import path
-import Divider from "@mui/material/Divider"; // Correct import path
-import TextField from "@mui/material/TextField"; // Correct import path
-import Typography from "@mui/material/Typography"; // Correct import path
-import List from "@mui/material/List"; // Correct import path
-import ListItem from "@mui/material/ListItem"; // Correct import path
-import ListItemIcon from "@mui/material/ListItemIcon"; // Correct import path
-import ListItemText from "@mui/material/ListItemText"; // Correct import path
-import Avatar from "@mui/material/Avatar"; // Correct import path
-import Fab from "@mui/material/Fab"; // Correct import path
-import SendIcon from "@mui/icons-material/Send"; // Correct import path
+import React, { useEffect, useState } from "react";
+import { makeStyles } from "@mui/styles";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Avatar from "@mui/material/Avatar";
+import Fab from "@mui/material/Fab";
+import SendIcon from "@mui/icons-material/Send";
+import Container from "@mui/material/Container";
 
 const useStyles = makeStyles({
   table: {
@@ -34,16 +35,49 @@ const useStyles = makeStyles({
   },
 });
 
-const Chat = ({ messages }) => {
+const Chat = ({ socket }) => {
   const classes = useStyles();
 
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      console.log(data);
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
+
+    return () => {
+      socket.off("receive_message");
+    };
+  }, [socket]);
+
+  const sendMessage = () => {
+    const newMessage = {
+      sender: socket.id,
+      message: message,
+    };
+
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+    socket.emit("send_message", { message, client: socket.id });
+
+    setMessage("");
+  };
+
   return (
-    <div>
-      <Grid border={9} borderColor="primary.main" container>
+    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+      <Grid container>
         <Grid item xs={12}>
-          <Typography variant="h5" className="header-message">
-            Chat
-          </Typography>
+          <Paper elevation={3} style={{ padding: "1rem" }}>
+            <Typography
+              variant="h4"
+              gutterBottom
+              style={{ marginBottom: "1rem" }}
+            >
+              Chat Room
+            </Typography>
+          </Paper>
         </Grid>
       </Grid>
       <Grid container component={Paper} className={classes.chatSection}>
@@ -91,17 +125,20 @@ const Chat = ({ messages }) => {
                 id="outlined-basic-email"
                 label="Type Something"
                 fullWidth
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                style={{ marginBottom: "1rem" }}
               />
             </Grid>
             <Grid xs={1} align="right">
               <Fab color="primary" aria-label="add">
-                <SendIcon />
+                <SendIcon onClick={sendMessage} />
               </Fab>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </div>
+    </Container>
   );
 };
 
