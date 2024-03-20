@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -15,29 +14,7 @@ import Fab from "@mui/material/Fab";
 import SendIcon from "@mui/icons-material/Send";
 import Container from "@mui/material/Container";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  chatSection: {
-    width: "100%",
-    height: "80vh",
-  },
-  headBG: {
-    backgroundColor: "#e0e0e0",
-  },
-  borderRight500: {
-    borderRight: "1px solid #e0e0e0",
-  },
-  messageArea: {
-    height: "70vh",
-    overflowY: "auto",
-  },
-});
-
 const Chat = ({ socket }) => {
-  const classes = useStyles();
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
@@ -66,22 +43,18 @@ const Chat = ({ socket }) => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+    <Container maxWidth="md" sx={{ marginTop: "2rem" }}>
       <Grid container>
         <Grid item xs={12}>
-          <Paper elevation={3} style={{ padding: "1rem" }}>
-            <Typography
-              variant="h4"
-              gutterBottom
-              style={{ marginBottom: "1rem" }}
-            >
+          <Paper elevation={3} sx={{ padding: "1rem" }}>
+            <Typography variant="h4" gutterBottom sx={{ marginBottom: "1rem" }}>
               Chat Room
             </Typography>
           </Paper>
         </Grid>
       </Grid>
-      <Grid container component={Paper} className={classes.chatSection}>
-        <Grid item xs={3} className={classes.borderRight500}>
+      <Grid container component={Paper} sx={{ width: "100%", height: "80vh" }}>
+        <Grid item xs={3} sx={{ borderRight: "1px solid #e0e0e0" }}>
           <Divider />
           <List>
             <ListItem button key="GlobalChat">
@@ -96,7 +69,7 @@ const Chat = ({ socket }) => {
           </List>
         </Grid>
         <Grid item xs={9}>
-          <List className={classes.messageArea}>
+          <List sx={{ height: "70vh", overflowY: "auto" }}>
             {messages.map((msg, index) => (
               <div key={index} style={{ marginBottom: "0.5rem" }}>
                 <ListItem key="1">
