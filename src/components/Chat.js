@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+
+import io from "socket.io-client";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -14,7 +16,9 @@ import Fab from "@mui/material/Fab";
 import SendIcon from "@mui/icons-material/Send";
 import Container from "@mui/material/Container";
 
-const Chat = ({ socket }) => {
+const socket = io.connect("http://localhost:8080");
+
+const Chat = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
